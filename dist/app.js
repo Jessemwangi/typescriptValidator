@@ -7,6 +7,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 console.log("PMApp in TS begins...");
 console.log("am being watched");
+function validate(validateinput) {
+    let isValid = true;
+    if (validateinput.required) {
+        isValid = isValid && validateinput.value.toString().trim.length !== 0;
+    }
+    if (validateinput.minLength != null &&
+        typeof validateinput.value === 'string') {
+        isValid =
+            isValid && validateinput.value.length >= validateinput.minLength;
+    }
+    if (validateinput.maxLength != null &&
+        typeof validateinput.value === 'string') {
+        isValid =
+            isValid && validateinput.value.length <= validateinput.maxLength;
+    }
+    if (validateinput.min != null &&
+        typeof validateinput.value === 'number') {
+        isValid = isValid && validateinput.value >= validateinput.min;
+    }
+    if (validateinput.max != null &&
+        typeof validateinput.value === 'number') {
+        isValid = isValid && validateinput.value <= validateinput.max;
+    }
+    return isValid;
+}
 function autobind(_, _2, descriptor) {
     const originalMethods = descriptor.value;
     const adjDescriptor = {
