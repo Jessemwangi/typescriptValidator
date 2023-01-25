@@ -13,21 +13,17 @@ function validate(validateinput) {
         isValid = isValid && validateinput.value.toString().trim.length !== 0;
     }
     if (validateinput.minLength != null &&
-        typeof validateinput.value === 'string') {
-        isValid =
-            isValid && validateinput.value.length >= validateinput.minLength;
+        typeof validateinput.value === "string") {
+        isValid = isValid && validateinput.value.length >= validateinput.minLength;
     }
     if (validateinput.maxLength != null &&
-        typeof validateinput.value === 'string') {
-        isValid =
-            isValid && validateinput.value.length <= validateinput.maxLength;
+        typeof validateinput.value === "string") {
+        isValid = isValid && validateinput.value.length <= validateinput.maxLength;
     }
-    if (validateinput.min != null &&
-        typeof validateinput.value === 'number') {
+    if (validateinput.min != null && typeof validateinput.value === "number") {
         isValid = isValid && validateinput.value >= validateinput.min;
     }
-    if (validateinput.max != null &&
-        typeof validateinput.value === 'number') {
+    if (validateinput.max != null && typeof validateinput.value === "number") {
         isValid = isValid && validateinput.value <= validateinput.max;
     }
     return isValid;
@@ -42,6 +38,27 @@ function autobind(_, _2, descriptor) {
         },
     };
     return adjDescriptor;
+}
+class ProjectList {
+    constructor(type) {
+        this.type = type;
+        this.templateElement = document.getElementById("project-list");
+        this.hostElement = document.getElementById("app");
+        const importedNode = document.importNode(this.templateElement.content, true);
+        this.element = importedNode.firstElementChild;
+        this.element.id = `${this.type}-projects`;
+        this.attach();
+        this.renderContent();
+    }
+    renderContent() {
+        const listId = `${this.type}-projects-list`;
+        this.element.querySelector("ul").id = listId;
+        this.element.querySelector("h2").textContent =
+            this.type.toUpperCase() + "PROJECTS";
+    }
+    attach() {
+        this.hostElement.insertAdjacentElement("beforeend", this.element);
+    }
 }
 class projectInput {
     constructor() {
@@ -60,24 +77,41 @@ class projectInput {
         const enterdTitle = this.titleInputElement.value;
         const enterDescritpion = this.descriptionInputElement.value;
         const enterPeople = this.peopleInputElement.value;
-        if (enterdTitle.trim().length === 0 || enterDescritpion.trim().length === 0 || enterPeople.trim().length === 0) {
-            alert('invalid input');
+        const titleValidatable = {
+            value: enterdTitle,
+            required: true,
+        };
+        const descriptionValidatable = {
+            value: enterDescritpion,
+            required: true,
+            minLength: 5,
+        };
+        const peopleValidatable = {
+            value: +enterPeople,
+            required: true,
+            min: 1,
+            max: 10,
+        };
+        if (!validate(titleValidatable) ||
+            !validate(descriptionValidatable) ||
+            !validate(peopleValidatable)) {
+            alert("Invalid input, please try again");
         }
         else {
             return [enterdTitle, enterDescritpion, +enterPeople];
         }
     }
     clearInput() {
-        this.titleInputElement.value = '';
-        this.descriptionInputElement.value = '';
-        this.peopleInputElement.value = '';
+        this.titleInputElement.value = "";
+        this.descriptionInputElement.value = "";
+        this.peopleInputElement.value = "";
     }
     submithandler(e) {
         e.preventDefault();
         const userInput = this.gatheruserinput();
-        if (Array.isArray((userInput))) {
+        if (Array.isArray(userInput)) {
             const [title, desc, people] = userInput;
-            console.log('title', title, 'description', desc, 'people', people);
+            console.log("title", title, "description", desc, "people", people);
             this.clearInput();
         }
         console.log(e.target, this.titleInputElement.value);
