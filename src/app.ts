@@ -1,6 +1,23 @@
 console.log('PMApp in TS begins...');
 console.log('am being watched');
 
+function autobind(
+    _: any,
+        _2: String,
+            descriptor:PropertyDescriptor
+) {
+    const originalMethods = descriptor.value;
+    const adjDescriptor: PropertyDescriptor = {
+        configurable: true,
+        get() {
+            const boundFn = originalMethods.bind(this);
+            return boundFn;
+        },
+    };
+    return adjDescriptor;
+}
+
+
 class projectInput {
 
     templateElement: HTMLTemplateElement;
@@ -19,7 +36,7 @@ class projectInput {
         const importedNode = document.importNode(this.templateElement.content, true);
         this.element = importedNode.firstElementChild as HTMLFormElement;
 
-        this.attach();
+        
 
         this.element.id = 'user_input';
 
@@ -27,7 +44,19 @@ class projectInput {
         this.descriptionInputElement = <HTMLInputElement>this.element.querySelector('#description')
         this.peopleInputElement = <HTMLInputElement>this.element.querySelector('#people')
         
-        
+     
+
+        this.attach();
+        this.configure();
+    }
+
+    private submithandler(e: Event) {
+        e.preventDefault();
+        console.log(e.target, this.titleInputElement.value);
+    }
+
+    private configure() {
+        this.element.addEventListener('submit', this.submithandler)
     }
     private attach() {
         this.hostElement.insertAdjacentElement('afterbegin',this.element)
